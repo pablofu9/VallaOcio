@@ -8,54 +8,19 @@ import { FilmCard } from "../components/filmCard/filmCard";
 import { GetFilmsUseCase } from "../usecases/getFilmsUseCase";
 import { filmService } from "../services/filmService";
 import { RefreshControl } from "react-native";
+import { useFilms } from "../hooks/useFilms";
 
 export const FilmsScreen = () => {
   // Film variables from API call
-  const [films, setFilms] = useState<Film[]>([]);
-  // Loading Flag to track when films are loading
-  const [loading, setLoading] = useState(true);
-  // Refresh list flag
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  // Filtered films by textfield
-  const [filteredFilms, setFilteredFilms] = useState<Film[]>([]);
-  // Flag to set the query for the searcher
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    films,
+    loading,
+    isRefreshing,
+    onRefresh,
+    handleSearch,
+  } = useFilms(); 
 
-  const fetchFilms = async () => {
-    setLoading(true);
-    try {
-      const data = await filmService.getFilms();
-      setFilms(data);
-      setFilteredFilms(data);
-    } catch (error) {
-      console.error("Error fetching films:", error);
-    } finally {
-      setLoading(false);
-      setIsRefreshing(false);
-    }
-  };
 
-  // Execute in initialPhase
-  useEffect(() => {
-    fetchFilms();
-  }, []);
-
-  // Function that executes in pull to refresh
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    fetchFilms();
-  };
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query) {
-      const filtered = films.filter((film) =>
-        film.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredFilms(filtered);
-    } else {
-      setFilteredFilms(films);
-    }
-  };
   function handleFilterPess() {}
 
   if (loading && !isRefreshing) {
@@ -76,7 +41,7 @@ export const FilmsScreen = () => {
       />
       <View style={styles.listContainer}>
         <FlatList
-          data={filteredFilms}
+          data={films}
           refreshing={isRefreshing}
           onRefresh={onRefresh}
           keyExtractor={(item) => item.id}
