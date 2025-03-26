@@ -21,7 +21,7 @@ import Animated, {
 import { AnimatedHeaderImage } from "../../components/animatedHeaderImage/animatedHeaderImage";
 import { ParallaxHeader } from "../../components/parallaxHeader/parallaxHeader";
 
-const IMAGE_HEIGHT = 300;
+const IMAGE_HEIGHT = 200;
 type RootStackParamList = {
   filmDetail: { film: Film };
 };

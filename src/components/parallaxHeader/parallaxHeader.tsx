@@ -1,5 +1,11 @@
 import Animated, { AnimatedStyle } from "react-native-reanimated";
-import { StyleSheet, ViewStyle, View, Text } from "react-native";
+import {
+  StyleSheet,
+  ViewStyle,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { GlobalStyle } from "../../styles/GlobalStyle";
 import { CircularButton } from "../buttons/circularButton";
 import { AntDesign } from "@expo/vector-icons";
@@ -65,17 +71,21 @@ export const ParallaxHeader = ({
           </>
         ) : (
           <>
-            <AntDesign
-              name="left"
-              size={20}
-              color={GlobalStyle.colors.primaryPurple}
-            />
+            <TouchableOpacity onPress={handleGoBack}>
+              <AntDesign
+                name="left"
+                size={20}
+                color={GlobalStyle.colors.primaryPurple}
+              />
+            </TouchableOpacity>
             <Text>{textHeader}</Text>
+            <TouchableOpacity onPress={handleShare}>
             <AntDesign
               name="sharealt"
               size={20}
               color={GlobalStyle.colors.primaryPurple}
             />
+            </TouchableOpacity>
           </>
         )}
       </View>
