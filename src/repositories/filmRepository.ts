@@ -1,5 +1,6 @@
 import { getFilms } from '../api/filmApi';
 import { Film } from '../models/film';
+
 // Repository -> Manage Api interactions keeping separate the logic from the api calls
 export class FilmRepository {
   async fetchFilms(): Promise<Film[]> { // 👈 Aseguramos que devuelve un    // REAL API CALL

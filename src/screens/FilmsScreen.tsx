@@ -1,4 +1,10 @@
-import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { Header } from "../components/header/header";
 import { GlobalStyle } from "../styles/GlobalStyle";
 import React, { useRef, useState, useEffect } from "react";
@@ -9,28 +15,25 @@ import { GetFilmsUseCase } from "../usecases/getFilmsUseCase";
 import { filmService } from "../services/filmService";
 import { RefreshControl } from "react-native";
 import { useFilms } from "../hooks/useFilms";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { LoadingScreen } from "./loadingScreen/loadingScreen";
+
+type RootStackParamList = {
+  filmDetail: { film: Film };
+};
 
 export const FilmsScreen = () => {
   // Film variables from API call
-  const {
-    films,
-    loading,
-    isRefreshing,
-    onRefresh,
-    handleSearch,
-  } = useFilms(); 
+  const { films, loading, isRefreshing, onRefresh, handleSearch } = useFilms();
 
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   function handleFilterPess() {}
 
   if (loading && !isRefreshing) {
     return (
-      <View style={styles.laodingContainer}>
-        <ActivityIndicator
-          size="large"
-          color={GlobalStyle.colors.primaryPurple}
-        />
-      </View>
+      <LoadingScreen />
     );
   }
   return (
@@ -46,7 +49,11 @@ export const FilmsScreen = () => {
           onRefresh={onRefresh}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.contentStyle}
-          renderItem={({ item }) => <FilmCard film={item} />}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => navigation.navigate("filmDetail", {film: item})}>
+              <FilmCard film={item} />
+            </TouchableOpacity>
+          )}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
@@ -70,7 +77,7 @@ const styles = StyleSheet.create({
 
   rootContainer: {
     flex: 1,
-    backgroundColor: GlobalStyle.colors.grayBackground,
+    backgroundColor: GlobalStyle.colors.semiGrayBG,
   },
   listContainer: {
     flex: 1,

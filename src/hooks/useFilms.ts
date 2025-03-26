@@ -16,7 +16,16 @@ import { filmService } from "../services/filmService";
  * @returns {Function} handleSearch - Function to filter films based on a search query.
  */
 
-export const useFilms = () => {
+// Define the return type of the hook
+type UseFilmsReturnType = {
+  films: Film[];
+  loading: boolean;
+  isRefreshing: boolean;
+  onRefresh: () => void;
+  handleSearch: (query: string) => void;
+};
+
+export const useFilms = (): UseFilmsReturnType => {
   const [films, setFilms] = useState<Film[]>([]); // Films fetched from the API
   const [filteredFilms, setFilteredFilms] = useState<Film[]>([]); // Filtered films based on search query
   const [loading, setLoading] = useState(true); // Loading state for films
