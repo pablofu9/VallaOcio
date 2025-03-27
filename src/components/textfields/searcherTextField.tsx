@@ -14,7 +14,7 @@ export const SearcherTextField = ({ placeholder, onChangeText }: searcherProps) 
     setIsFocused(true);
   }
   return (
-    <View style={styles.viewContainer}>
+    <View style={isFocused ? styles.viewContainerFocused : styles.viewContainer}>
       <TextInput
         style={[
           styles.textInputContainer,
@@ -31,7 +31,10 @@ export const SearcherTextField = ({ placeholder, onChangeText }: searcherProps) 
 
 const styles = StyleSheet.create({
   viewContainer: {
-    width: "80%",
+    width: "50%",
+  },
+  viewContainerFocused: {
+    width: '90%'
   },
   textInputContainer: {
     width: "100%",

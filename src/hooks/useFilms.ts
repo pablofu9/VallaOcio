@@ -23,6 +23,7 @@ type UseFilmsReturnType = {
   isRefreshing: boolean;
   onRefresh: () => void;
   handleSearch: (query: string) => void;
+  handleDateFilter: (date: Date) => void; // 👈 añadir esta línea
 };
 
 export const useFilms = (): UseFilmsReturnType => {
@@ -31,7 +32,7 @@ export const useFilms = (): UseFilmsReturnType => {
   const [loading, setLoading] = useState(true); // Loading state for films
   const [isRefreshing, setIsRefreshing] = useState(false); // Refresh state for pull-to-refresh action
   const [searchQuery, setSearchQuery] = useState(""); // Search query for filtering films
-
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   /**
    * Fetch films from the API and update the state.
    * It sets the films and filteredFilms state once the data is fetched.
@@ -49,12 +50,31 @@ export const useFilms = (): UseFilmsReturnType => {
       setIsRefreshing(false);
     }
   };
-
+  const handleDateFilter = (date: Date) => {
+    setSelectedDate(date);
+    applyFilters(searchQuery, date);
+  };
   // Fetch films when the hook is initialized
   useEffect(() => {
     fetchFilms();
   }, []);
+  const applyFilters = (query: string, date: Date | null) => {
+    let filtered = films;
 
+    if (query) {
+      filtered = filtered.filter((film) =>
+        film.name.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+
+    if (date) {
+      filtered = filtered.filter(
+        (film) => film.date.toDateString() === date.toDateString()
+      );
+    }
+
+    setFilteredFilms(filtered);
+  };
   /**
    * Trigger a refresh of the films list.
    * This function is called when the user performs a pull-to-refresh action.
@@ -72,21 +92,14 @@ export const useFilms = (): UseFilmsReturnType => {
    */
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query) {
-      const filtered = films.filter((film) =>
-        film.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredFilms(filtered);
-    } else {
-      setFilteredFilms(films); // Reset the filter if the query is empty
-    }
+    applyFilters(query, selectedDate);
   };
-
   return {
     films: filteredFilms,
     loading,
     isRefreshing,
     onRefresh,
     handleSearch,
+    handleDateFilter, 
   };
 };
